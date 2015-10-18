@@ -18,10 +18,12 @@ public class ChaosBrownianMotion {
 	 * w = sqrt(w0^2 - u^2)
 	 */
 	
-	double K = 0;
-	double t = 0;
-	double b = 0;
-	double B = 0;
+	protected double K = 0;
+	protected double t = 0;
+	protected double b = 0;
+	protected double B = 0;
+	
+	protected double xn, yn, vn, w0;
 	
 	public double Function_r(double xn) {
 		return  4 - b + b*Math.exp(-1*B*Math.abs(xn));
@@ -57,25 +59,30 @@ public class ChaosBrownianMotion {
 		return result;
 	}	
 	
-	public double calc_x(double xn, double yn, double vn, double w0) {
+	public double calc_x() {
 		return Function_F(xn, yn, vn, w0);
 	}
-	public double calc_v(double xn, double yn, double vn, double w0) {
+	public double calc_v() {
 		return Function_G(xn, yn, vn, w0);
 	}
-	public double calc_y(double rn, double yn, double xn) {
+	public double calc_y() {
 		return Function_r(xn) * (0.5 - yn) * (0.5 + yn) - 0.5;
+	}
+	
+	public void setNPrm(double xn, double yn, double vn, double w0) {
+		this.xn = xn;
+		this.yn = yn;
+		this.vn = vn;
+		this.w0 = w0;
 	}
 	
 	public double getw(double w0, double u) { return Math.sqrt(w0*w0 - u*u); }
 	public double geta(double u, double t) { return Math.exp(-1 * u * t); }
-	public double getu(double k) { return k/2; }
-	
+	public double getu(double k) { return k/2; }	
 	
 	public void setB(double B) { this.B = B; }
 	public void setb(double b) { this.b = b; }
 	public void sett(double t) { this.t = t; }
-	public void setK(double K) { this.K = K; }
-	
+	public void setK(double K) { this.K = K; }	
 	
 }
