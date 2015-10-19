@@ -9,7 +9,8 @@ public class ChaosNeuralNetwork02 {
 	protected double b = 0;
 	protected double u = 0;
 	
-	protected double xn, yn, vn, w0;
+	protected double xn, yn, vn, zn, w0;
+	protected double x, y, v, z, h, r;
 	
 	protected ArrayList<ChaosNeuralNetwork02> list;
 	ArrayList<Double> V;
@@ -34,37 +35,38 @@ public class ChaosNeuralNetwork02 {
 	}
 	
 	public double calc_z() {
-		double res = 0;
+		z = 0;
 		for(int i = 0; i < list.size(); i++) {
 			ChaosNeuralNetwork02 nn = list.get(i);
-			res += nn.calc_h(nn.getV()) * nn.calc_x();
+			z += nn.calc_h(nn.getV()) * nn.getXn();
 		}
-		return res;
+		return z;
 	}
 	
 	public double calc_h(ArrayList<Double> Vj) { 
-		double res = 0;
+		h = 0;
 		for(int i = 0; i < V.size(); i++) {
-			res += (2 * V.get(i) - 1) * (2 * Vj.get(i) - 1);
+			h += (2 * V.get(i) - 1) * (2 * Vj.get(i) - 1);
 		}
-		return res;
+		return h;
 	}
 	
 	public double calc_y() {
-		return calc_r() * (0.5 - yn) * (0.5 + yn) - 0.5;
+		y = calc_r() * (0.5 - yn) * (0.5 + yn) - 0.5;
+		return y;
 	}
 	
 	public double calc_r() {
-		return 4 - b + b * Math.exp(-1 * Math.abs(xn));
+		r = 4 - b + b * Math.exp(-1 * Math.abs(xn));
+		return r;
 	}
 	
 	public double calc_v() {
 		double u, a;
-
 		u = getu(K);
 		a = geta(u, t);
-		
-		return -1 * a * vn;
+		v = -1 * a * vn;
+		return v;
 	}
 	
 	public double calc_x() {
@@ -73,18 +75,39 @@ public class ChaosNeuralNetwork02 {
 		u = getu(K);
 		w = getw(w0, u);
 		a = geta(u, t);
-		
-		return (1 - a) * K*yn/((w*w + u*u) * Math.sqrt(t)) + a*xn;
+		x = (1 - a) * K*yn/((w*w + u*u) * Math.sqrt(t)) + a*xn;
+		return x;
 	}
 	
 	public double getw(double w0, double u) { return Math.sqrt(w0*w0 - u*u); }
 	public double geta(double u, double t) { return Math.exp(-1 * u * t); }
-	public double getu(double k) { 
-//		return k/2;
-		return u;
-	}	
+	public double getu(double k) { return u; }	
+	public double getXn() { return xn; }
 	
 	public void addV(double V) { this.V.add(V); }
 	public ArrayList<Double> getV() { return V; }
 	public void addNN(ChaosNeuralNetwork02 nn) { list.add(nn); }
+	
+	public void nextStep() {
+		this.xn = x;
+		this.yn = y;
+		this.vn = v;
+		this.zn = z;
+	}
+	
+	public void setData(double xn, double yn, double vn, double z) {
+		this.xn = xn;
+		this.yn = yn;
+		this.vn = vn;
+		this.zn = z;
+	}
+	
+	public double[] getData() {
+		double[] result = new double[4];
+		result[0] = x;
+		result[1] = y;
+		result[2] = v;
+		result[3] = z;
+		return result;
+	}
 }

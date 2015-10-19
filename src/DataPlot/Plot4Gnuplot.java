@@ -16,14 +16,26 @@ public class Plot4Gnuplot {
 	
 	public void apend(String data) { buf.add(data); }
 	
-	public void write() {
+	public void writeInit(String name) {
 		try {
-			FileWriter fw = new FileWriter(path + "data.txt");
+			FileWriter fw = new FileWriter(path + name, false);
+			fw.write("");
+			fw.close();
+		} catch (Exception e) {
+			System.out.println("error : write data ");
+		}
+	}
+	
+	public void write(String name) {
+		try {
+			FileWriter fw = new FileWriter(path + name, true);
 			for(String e: buf) fw.write(e + "\n");
 			fw.close();
 		} catch (Exception e) {
 			System.out.println("error : write data ");
 		}
 	}
+	
+	public void clearBuf() { buf.clear(); }
 
 }

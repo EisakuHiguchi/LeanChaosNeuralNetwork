@@ -1,42 +1,46 @@
 package DataPlot;
 
-import ChaosNeuralNetwork.ChaosNeuralNetwork02;
+import ChaosNeuralNetwork.ChaosNeuralNetworkManager;
 
 public class Main {
 	
 	public static void main(String[] args) {
 		
-		ChaosNeuralNetwork02 cnn = new ChaosNeuralNetwork02();
-		ChaosNeuralNetwork02 cnn2 = new ChaosNeuralNetwork02();
+		int[] data1 = {
+				0,1,1,1, 1,0,0,0, 1,1,1,0, 1,0,0,0
+			};
+		int[] data2 = {
+				0,1,1,0, 1,0,0,1, 1,0,0,0, 0,1,1,1
+		};
+		int[] data3 = {
+				1,0,0,0, 1,0,0,1, 1,1,1,1, 0,0,0,1
+		};
 		
-		double x = 0.3;
-		double y = 0.3;
-		double v = 0.3;
-		double z;
+		double K = 1.0;
+		double t = 0.1;
+		double b = 1.0;
+		double u = 0.01;
+		
+		double x = 0.1;
+		double y = 0.1;
+		double v = 0.1;
 		double w0 = Math.PI;
-		double xn, yn, vn;
-		double t = 0.01;
 		
-		cnn.setBasicPrm(1.0, t, 1.0, 0.01);
-		cnn2.setBasicPrm(1.0, t, 1.0, 0.01);
+		int size = 16;
+		int loop = 100;
 		
-		cnn.setNPrm(0.1, 0.1, 0.1, Math.PI);
-		cnn.addV(1);
-		cnn.addNN(cnn2);
+		ChaosNeuralNetworkManager cnnm = new ChaosNeuralNetworkManager(x, y, v, w0);
+		cnnm.create(K, t, b, u, size);
+		cnnm.setData(data1);
+		cnnm.setData(data2);
+		cnnm.setData(data3);
 		
-		Plot4Gnuplot plot = new Plot4Gnuplot("C:\\\\work\\\\Data\\\\");
-		for(int i = 0; i < 2; i++) {
-			cnn.setNPrm(x, y, v, w0);
-			xn = cnn.calc_v();
-			yn = cnn.calc_y();
-			vn = cnn.calc_v();
-			z = cnn.calc_z();
-			x = xn;
-			y = yn;
-			v = vn;
-			plot.apend(x + " " + y + " " + z);
+		PlotGnuPlot_Ex01 plot = new PlotGnuPlot_Ex01("C:\\\\work\\\\Data\\\\", size);
+		
+		for(int i = 0; i < loop; i++) {
+			cnnm.calc();
+			plot.write(cnnm.getData());
 		}
-		plot.write();
 		
 		System.out.println("fin");
 	}
